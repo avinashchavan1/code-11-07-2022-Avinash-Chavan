@@ -1,8 +1,23 @@
-const data = [
-  { Gender: "Male", HeightCm: 171, WeightKg: 96 },
-  { Gender: "Male", HeightCm: 161, WeightKg: 85 },
-  { Gender: "Male", HeightCm: 180, WeightKg: 77 },
-  { Gender: "Female", HeightCm: 166, WeightKg: 62 },
-  { Gender: "Female", HeightCm: 150, WeightKg: 70 },
-  { Gender: "Female", HeightCm: 167, WeightKg: 82 },
-];
+const arrayStream = require("stream-json/streamers/StreamArray");
+const path = require("path");
+const fs = require("fs");
+const stream = arrayStream.withParser();
+const BMICheck = require("./BMICheck");
+const updateOutput = require("./updateOutput");
+
+fs.writeFileSync("./output.json", "[");
+
+stream.on("data", (val) => {
+  let updatedData = { ...val.value };
+  let bmiRes = BMICheck(updatedData.HeightCm, updatedData.WeightKg);
+  updatedData = { ...updatedData, ...bmiRes };
+  updateOutput(JSON.stringify(updatedData) + ",");
+});
+
+stream.on("end", () => {
+  updateOutput("]");
+  console.log("File parsing complete");
+});
+
+const fileName = path.join(__dirname, "data.json");
+fs.createReadStream(fileName).pipe(stream.input);
