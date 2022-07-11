@@ -2,8 +2,8 @@ const arrayStream = require("stream-json/streamers/StreamArray");
 const path = require("path");
 const fs = require("fs");
 const stream = arrayStream.withParser();
-const BMICheck = require("./BMICheck");
-const updateOutput = require("./updateOutput");
+const BMICheck = require("./utils/BMICheck");
+const updateOutput = require("./utils/updateOutput");
 
 fs.writeFileSync("./output.json", "[");
 
